@@ -34,9 +34,13 @@ function render(times) {
         categories: CATEGORIES.filter(x => x !== time.category)
     }));
 
+    let cursor = getCursor();
+
     BUTTONS_LIST.innerHTML = Mustache.render(BUTTONS_VIEW, { categories: CATEGORIES });
     DURATIONS_LIST.innerHTML = Mustache.render(DURATIONS_VIEW, { durations: getDurations(times) });
     TIMES_LIST.innerHTML = Mustache.render(TIMES_VIEW, { times });
+
+    setCursor(cursor, null);
 }
 
 function onDelete(id) {
@@ -76,6 +80,19 @@ function onStart(category) {
 
     setTimes(times);
 
+    render(times);
+}
+
+function onEdit(timeId, key, value) {
+    let times = getTimes();
+    let time = times.find(x => x.id === timeId);
+
+    if (!time)
+        return;
+
+    time[key] = value;
+
+    setTimes(times);
     render(times);
 }
 
@@ -131,20 +148,43 @@ function getDuration(time) {
     if (time.endTime == null)
         return 0;
 
-    console.log(time.startTime.split(':').map(x => parseInt(x)));
-
-    let [sh, sm, ss] = [...time.startTime.split(':').map(x => parseInt(x)), 0, 0, 0];
-    let [eh, em, es] = [...time.endTime.split(':').map(x => parseInt(x)), 0, 0, 0];
+    let [sh, sm, ss] = [...time.startTime.split(':').map(x => parseInt(x) || 0), 0, 0, 0];
+    let [eh, em, es] = [...time.endTime.split(':').map(x => parseInt(x) || 0), 0, 0, 0];
 
     let diff = (eh - sh) * 60 * 60
              + (em - sm) * 60
              + (es - ss);
 
-    console.log(eh, sh);
-    console.log(em, sm);
-    console.log(es, ss);
-
     return Math.max(diff, 0);
+}
+
+function getCursor() {
+    let element = document.activeElement;
+
+    return (element)
+        ? {
+            id: element.id,
+            selectionStart: element.selectionStart,
+            selectionEnd: element.selectionEnd,
+        }
+        : {};
+}
+
+function setCursor(cursor, focusSelector) {
+    let element;
+
+    if (element = (cursor.id && document.getElementById(cursor.id))) {
+        element.focus();
+        if (
+            typeof(element.setSelectionRange) == 'function'
+            && cursor.selectionStart
+            && cursor.selectionEnd
+        ) {
+            element.setSelectionRange(cursor.selectionStart, cursor.selectionEnd);
+        }
+    } else if (element = (focusSelector && document.querySelector(focusSelector))) {
+        element.focus();
+    }
 }
 
 

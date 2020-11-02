@@ -39,20 +39,23 @@
     <script id="timesView" type="x-tmpl-mustache">
         {{#times}}
         <div id="{{id}}" class="time-row">
-            <input name="date" type="date" value="{{date}}" />
+            <input name="date" type="date" value="{{date}}"
+                oninput="onEdit('{{id}}', 'date', this.value)" />
             <span>
                 Start:
-                <input name="start" type="text" placeholder="00:00:01"
-                    size="5" value="{{startTime}}" />
+                <input id="{{id}}-startTime" name="start" type="text" placeholder="00:00:01"
+                    size="5" value="{{startTime}}"
+                    oninput="onEdit('{{id}}', 'startTime', this.value)" />
             </span>
             <span>
                 End:
-                <input name="end" type="text" placeholder="23:59:59"
-                    size="5" value="{{endTime}}" />
+                <input id="{{id}}-endTime" name="end" type="text" placeholder="23:59:59"
+                    size="5" value="{{endTime}}"
+                    oninput="onEdit('{{id}}', 'endTime', this.value)" />
             </span>
             <span>
                 Category:
-                <select>
+                <select oninput="onEdit('{{id}}', 'category', this.value)">
                     <option value="{{category}}" selected>{{category}}</option>
                     {{#categories}}
                     <option value="{{.}}">{{.}}</option>
