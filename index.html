@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Work Time</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+.content { max-width: 800px; margin: auto; padding: 40px 0; }
+#buttonsList, #durationsList { display: flex; justify-content: space-evenly; padding-bottom: 40px; }
+.time-row { display: flex; justify-content: space-between; padding-top: 20px; }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div id="buttonsList">
+        </div>
+
+        <div id="durationsList">
+        </div>
+
+        <div id="timesList">
+        </div>
+    </div>
+
+    <script id="buttonsView" type="x-tmpl-mustache">
+        {{#categories}}
+        <button onmousedown="onStart('{{.}}')">Start: {{.}}</button>
+        {{/categories}}
+        <button onmousedown="onStop()">Stop</button>
+    </script>
+    <script id="durationsView" type="x-tmpl-mustache">
+        {{#durations}}
+        <span>{{category}}: {{duration}}</span>
+        {{/durations}}
+    </script>
+    <script id="timesView" type="x-tmpl-mustache">
+        {{#times}}
+        <div id="{{id}}" class="time-row">
+            <input name="date" type="date" value="{{date}}" />
+            <span>
+                Start:
+                <input name="start" type="text" placeholder="00:00:01"
+                    size="5" value="{{startTime}}" />
+            </span>
+            <span>
+                End:
+                <input name="end" type="text" placeholder="23:59:59"
+                    size="5" value="{{endTime}}" />
+            </span>
+            <span>
+                Category:
+                <select>
+                    <option value="{{category}}" selected>{{category}}</option>
+                    {{#categories}}
+                    <option value="{{.}}">{{.}}</option>
+                    {{/categories}}
+                </select>
+            </span>
+            <button onmousedown="onDelete('{{id}}')">X</button>
+        </div>
+        {{/times}}
+    </script>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript">
+        init();
+    </script>
+</body>
+</html>
