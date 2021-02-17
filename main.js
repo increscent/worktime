@@ -9,7 +9,7 @@
  */
 const BUTTONS_LIST = document.getElementById('buttonsList');
 const BUTTONS_VIEW = document.getElementById('buttonsView').innerHTML;
-const CATEGORIES = ['TA', '707', '639'];
+const CATEGORIES = ['TA', 'car', '704', '752'];
 const DURATIONS_LIST = document.getElementById('durationsList');
 const DURATIONS_VIEW = document.getElementById('durationsView').innerHTML;
 const TIMES_LIST = document.getElementById('timesList');
@@ -123,13 +123,21 @@ function getDurations(times) {
         category,
         totalSecs: times
             .filter(time => time.category === category)
-            .map(time => getDuration(time))
+            .map(getDuration)
             .reduce((acc, x) => acc + x, 0),
     }));
 
     durations.push({
         category: 'Total',
         totalSecs: durations.reduce((acc, x) => acc + x.totalSecs, 0),
+    });
+
+    durations.push({
+        category: 'Today',
+        totalSecs: times
+            .filter(time => time.date === getDate())
+            .map(getDuration)
+            .reduce((acc, x) => acc + x, 0),
     });
 
     return durations.map(({category, totalSecs}) => {
